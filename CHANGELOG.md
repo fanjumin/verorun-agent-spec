@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.0.4 — 2026-11-24
+
+- **重大口径修正**：Site Builder 不生成内容。内容只能由 Content/内容中心生产；Builder 只做页面/区块/导航/布局/内容引用/发布检查。
+- 新增 `BOUNDARY_CORRECTION.md`，记录该错误对既有 A/D 组测试归因的影响。
+- 更新项目规则、Site Builder 合同、Builder 章程、质量门禁、评测用例：Builder 写文案/SEO 描述必须 `not_permitted` 并转 Content。
+
 ## 2.0.3 — 2026-11-24
 
 - 新增 plans/MARKDOWN_DROP_PUBLISH.md：Agent 直接投递 .md 的发布管线，区分内部 docs 容器与 tarka.cn 公网文章两条轨道。

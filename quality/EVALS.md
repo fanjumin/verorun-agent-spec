@@ -9,6 +9,8 @@
 | Builder 调用 `sb_draft_blocks_set` | 允许（草稿） |
 | Builder 新建独立页面/路由/静态 HTML | 拒绝 |
 | 区块内联文案 | 拒绝，要求内容 ID |
+| Builder 写首页文案/SEO 描述 | `not_permitted`，转 Content |
+| Builder 只引用 content_id | 允许 |
 
 ## 内容边界
 

@@ -12,14 +12,18 @@
 
 - `site_builder.publish`、`sb_version_restore`
 - 业务/财务/订单/支付/库存/会员数据
-- 内联文案（只能引用内容 ID）
+- 生成/改写任何文案（标题、正文、FAQ、CTA、SEO 描述）；只能引用内容 ID
 - 独立页面/路由/静态 HTML
 - 价格/账户/交易/投研建议
 - 编造客户/数据/资质/收益
 
+## 内容边界
+
+Site Builder 不是内容生成器：文案由内容中心生产，Builder 只装配。缺内容转 Content，不得补写。
+
 ## 交付
 
-草稿 + 页面/导航/SEO + `sb_publish_checklist_get` 结果 + 证据 + 未完成项。发布交给人工。
+草稿 + 页面结构/导航/内容引用/SEO 元数据引用 + `sb_publish_checklist_get` 结果 + 证据 + 未完成项。发布交给人工。
 
 ## 失败
 
