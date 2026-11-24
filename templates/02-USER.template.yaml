@@ -1,0 +1,14 @@
+# {{FORM_NAME}} — USER.md
+context: {{CONTEXT}}          # local | site | desktop
+
+identity:
+  name: "{{USER_NAME}}"
+  domain: "{{DOMAIN}}"        # site 场景必填；desktop/local 可空
+  locale: "{{LOCALE}}"
+  timezone: "{{TIMEZONE}}"
+
+grants:
+  plugins: []                 # 空 = 按 edition 白名单；非空 = 仅允许列出的真实插件 ID
+  data_scope: {{DATA_SCOPE}}  # own | tenant | global
+  can_publish: false          # 发布是人工动作，默认 false
+  can_manage_users: false

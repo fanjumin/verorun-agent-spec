@@ -1,0 +1,2 @@
+agent_id,display_name,slug,role_type,editions,domain,managed_modules,allowed_tools,forbidden_tools,data_scope,project_enabled,owner,health_endpoint,version,status
+{{AGENT_ID}},{{DISPLAY_NAME}},{{SLUG}},{{ROLE_TYPE}},{{EDITIONS}},{{DOMAIN}},{{MANAGED_MODULES}},{{ALLOWED_TOOLS}},{{FORBIDDEN_TOOLS}},{{DATA_SCOPE}},{{PROJECT_ENABLED}},{{OWNER}},{{HEALTH_ENDPOINT}},{{VERSION}},{{STATUS}}
