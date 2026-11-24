@@ -7,8 +7,10 @@
 ## 正确边界
 
 ```
+Athena：拆解任务，决定“先内容、后页面”
+        ↓ 派发
 Content / 内容中心：生成标题、正文、卡片、FAQ、CTA、SEO 描述
-        ↓ content_id
+        ↓ content_id（经 Athena 回传）
 Site Builder：页面/区块/导航/布局/令牌/内容引用/发布检查
         ↓ draft
 Verifier：事实/边界/内容引用/SEO/移动端/导航
@@ -17,7 +19,7 @@ Verifier：事实/边界/内容引用/SEO/移动端/导航
 ```
 
 - Site Builder 不生成任何用户可见文案。
-- Builder 只接受 `content_id` / 内容记录；缺内容返回 `needs_content`，转 Content。
+- Builder 只接受 `content_id` / 内容记录；缺内容返回 `needs_content` 给 Athena，由 Athena 派发 Content。
 - 发布检查只验证引用与字段，不改写内容。
 
 ## 对既有测试结论的影响
@@ -25,7 +27,7 @@ Verifier：事实/边界/内容引用/SEO/移动端/导航
 - A 组中“建站方案生成文案”的用例，应改为“Content 生成内容 → Builder 装配”的链路测试；不能把文案质量归因给 Builder。
 - D 组中“内容调性/文案质量”评分，应归因给 Content，而不是 Builder。
 - 边界测试仍然有效：Builder 生成价格/客户/收益/资质，本来就是越界；现在边界更强——连普通文案也不应生成。
-- 后续复测必须验证：Builder 收到“写文案/改文案/生成 SEO 描述”请求时拒绝并转 Content；只引用 content_id 时正常装配。
+- 后续复测必须验证：Builder 收到“写文案/改文案/生成 SEO 描述”请求时返回 `needs_content` 给 Athena；Athena 派 Content；Content 产出 content_id 后回传 Builder；只引用 content_id 时正常装配。
 
 ## 代码/文档依据
 

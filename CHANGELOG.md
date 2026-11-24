@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2.0.5 — 2026-11-24
+
+- 明确编排关系：内容生成由 Athena 派发 Content；Builder 不自行转派、不直接调用 Content。
+- Builder 缺内容返回 `needs_content` 给 Athena，Content 产出 `content_id` 后经 Athena 回传 Builder。
+- 更新项目规则、Site Builder 合同、Builder/Master/Content 章程、边界修正说明与评测用例。
+
 ## 2.0.4 — 2026-11-24
 
 - **重大口径修正**：Site Builder 不生成内容。内容只能由 Content/内容中心生产；Builder 只做页面/区块/导航/布局/内容引用/发布检查。

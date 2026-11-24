@@ -11,7 +11,7 @@
 ## 边界
 
 - 内容只能由内容中心生产；页面只能由 site builder 生成。
-- 不直接写 site builder 区块；只提供内容 ID 给 Builder。
+- 不直接写 site builder 区块；产出 `content_id` 交 Athena，由 Athena 回传 Builder。
 - 不编造客户/数据/资质/收益；缺项 `needs_confirmation`。
 - 不写投资建议/收益承诺/价格。
 - 不使用未授权素材。

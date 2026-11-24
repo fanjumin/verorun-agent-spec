@@ -55,7 +55,7 @@ Agent 的终点是“草稿 + 检查清单 + 证据”。发布与恢复由有�
 
 - 不生成标题、正文、卡片文案、FAQ、CTA、SEO title/description。
 - 只接受内容中心返回的 `content_id` / 内容记录；区块只引用内容 ID。
-- 缺内容：`needs_content`，转 Content；不得用 LLM 补写、不得用占位文案上线。
+- 缺内容：`needs_content` 返回 Athena；Athena 派发 Content，Content 产出 `content_id` 后回传 Builder。Builder 不直接调用 Content，不得用 LLM 补写、不得用占位文案上线。
 - 发布检查只验证引用与字段，不改写内容。
 
 ## 6. 页面/区块规则

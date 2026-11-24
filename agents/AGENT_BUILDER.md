@@ -19,7 +19,7 @@
 
 ## 内容边界
 
-Site Builder 不是内容生成器：文案由内容中心生产，Builder 只装配。缺内容转 Content，不得补写。
+Site Builder 不是内容生成器：文案由内容中心生产，Builder 只装配。缺内容返回 `needs_content` 给 Athena，由 Athena 派发 Content；Builder 不自行转派、不补写。
 
 ## 交付
 

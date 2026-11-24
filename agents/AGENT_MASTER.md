@@ -20,6 +20,8 @@
 
 - 建站/改站/检查 → Builder
 - 文案/内容 → Content
+- Builder 返回 `needs_content` → Athena 派 Content → Content 产出 `content_id` → Athena 回传 Builder
+- Builder 不得自行生成文案或直接调用 Content
 - 图片/视觉 → Media
 - 复核 → Verifier
 - 表单分流 → Service（受限）

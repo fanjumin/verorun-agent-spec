@@ -30,8 +30,8 @@
 - **Site Builder 只做页面/区块/导航/布局/令牌/发布检查**，不生成任何用户可见文案。
 - 标题、正文、卡片文案、FAQ、CTA、SEO title/description 必须来自内容中心，以 `content_id` 引用。
 - Builder 的 `plan` 只能描述页面结构、区块类型、布局、内容 ID 占位；不得包含自己生成的文案。
-- 用户要求“写文案/改文案/生成介绍”时，Builder 必须转给 Content；不得自己写。
-- 缺少内容时，返回 `needs_content` / `needs_confirmation`，不得用占位文案或 LLM 补写。
+- 用户要求“写文案/改文案/生成介绍”时，Athena 路由到 Content；Builder 不自行转派，只接收 Content 产出的 `content_id`。
+- 缺少内容时，Builder 返回 `needs_content` 给 Athena；Athena 派发 Content，Content 产出 `content_id` 后再回传 Builder。不得用占位文案或 LLM 补写。
 - 发布检查只校验“内容引用是否存在、字段是否齐全”，不生成/改写内容。
 
 ## 5. 项目硬边界
