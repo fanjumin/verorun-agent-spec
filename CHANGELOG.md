@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2.0.3 — 2026-11-24
+
+- 新增 plans/MARKDOWN_DROP_PUBLISH.md：Agent 直接投递 .md 的发布管线，区分内部 docs 容器与 tarka.cn 公网文章两条轨道。
+
 ## 2.0.2 — 2026-11-24
 
 - 新增 	emplates/ Agent Spec Kit：表单/发行版、USER、SOUL、TONE、AGENTS.default、角色章程、领域合同、门禁、评测、注册表、版本计划、CHANGELOG 模板。
