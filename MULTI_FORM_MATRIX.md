@@ -6,9 +6,9 @@
 | 形态 | 发行版/上下文 | 核心职责 | 允许数据 | 禁止 | 备注 |
 | --- | --- | --- | --- | --- | --- |
 | **tarka.cn 网站** | `official` + `context: site`（待部署确认） | 公网站点建设/内容/发布 | `site_builder.*`、内容中心、已批准素材 | 账户/交易/持仓/价格/订单/支付/客户 PII/投研建议 | 本目录 |
-| 桌面端塔卡投研 | 按实际 `VR_EDITION` | 研究/分析/证据链 | 以该发行版 L2 为准 | 以该发行版 L2 为准 | 需读对应 `editions/*.AGENTS.md` |
+| 桌面端塔卡投研 | `finance-desktop` + `context: desktop` | 单用户本机投研（无需 tarka.cn 登录）、证据链、反方风险、组合、合规与交付物 | 以发行 YAML、JWT、插件 capability、数据许可和本机授权为准 | 真实交易/未批准外发/跨实例读取/前端业务计算 | 完整规范见 `TARKA_DESKTOP.PROJECT.md` 与配套 DESKTOP 文档 |
 | 奥恪科研版 | `research-desktop`（需确认） | 科研/引用/写作 | 以 `research-desktop.AGENTS.md` 为准 | 以该 L2 为准 | 见 `roles/research-desktop/*.yaml` |
-| 金融桌面版 | `finance-desktop` | 投研/账单/部署 | 以 `finance-desktop.AGENTS.md` 为准 | 以该 L2 为准 | 见 `roles/finance-desktop/*.yaml` |
+| 金融桌面版 | 同“桌面端塔卡投研” | 不另建角色或规范 | 同上 | 同上 | `finance-desktop` 是 VeroRun edition，对外 identity 为 finance/塔卡投研 |
 | 客服类 | 按实际 edition | 咨询/工单/分流 | 以该 edition 为准 | 客户 PII/未授权承诺 | 待业务确认 |
 | 小程序类 | 按实际 edition | 待确认 | 待确认 | 待确认 | `mini_app_builder` 仅在 Builder 工具集内做规划/构建/查询 |
 

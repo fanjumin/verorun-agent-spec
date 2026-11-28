@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## 3.1.0 — 2026-11-28
+
+- 明确产品为**单用户本机桌面应用，不是多租户平台**；无需注册或登录 `tarka.cn` / `agent.tarka.cn`。区分本机核心认证与网站账号，可选中继不承载网站登录或偏好同步。
+- 记录新决策：目标将 `wechat_personal` 移出发行白名单。当前 YAML 仍包含、变更尚未执行，因此文档同时保留“当前 14 插件/目标 13 插件”，未虚写为已移除；增加实施后无残留插件和 UI/API 死入口的验收门。
+- 主 Agent 默认显示名与自称改为**金牛**，内部 `athena` slug、角色文件、任务、handoff、工具、DAG 和审计关联保持不变；支持本机自定义显示名。
+- 新增 `ONBOARDING.DESKTOP.md`：首次启用可跳过，首轮只问用户/助手称呼；未明确同意仅当前会话生效，同意后仅本机保存；onboarding 状态与长期偏好分离，支持修改、删除与恢复默认。
+- 更新基线、项目规则、USER、SOUL/TONE、TOOLS/MEMORY、Registry、金牛与 Ops 章程、计划、质量门和运维手册；评测集增加身份/首次启用及插件移除目标门，共 67 条，仍为 `designed_not_run`。
+- 本次仅更新 Spec 和受影响项静态复核，未执行白名单变更、首次启用开发或运行时测试。
+
+## 3.0.0 — 2026-11-28
+
+- 完成 VeroRun、verorun-workplace、verorun-agent-spec 三仓库静态复核，新增 `TARKA_DESKTOP_BASELINE.md`：记录 HEAD、真实职能、8 角色、14 插件、三条研究路径、桌面裁剪链与文档/代码漂移；未把静态阅读写成运行测试。
+- 补齐桌面版运行约规：`SOUL.DESKTOP.md`、`TONE.DESKTOP.md`、`TOOLS.DESKTOP.md`、`MEMORY.DESKTOP.md`、`AGENT_REGISTRY.DESKTOP.md`。
+- 新增 8 个 `agents/AGENT_DESKTOP_*.md` 角色章程，明确职责、输入输出、工具边界、失败与验收。
+- 新增 `contracts/TARKA_DESKTOP_RESEARCH_FLOW.md`：区分 discuss、research/report、research/pipeline；显式 DAG 固定为 plan → collect → audit → 并行分析/估值 → risk → pm → compliance。
+- 新增 `quality/DESKTOP_QUALITY_GATES.md`、`quality/DESKTOP_EVALS.md` 与 `operations/DESKTOP_RUNBOOK.md`；评测状态为 `designed_not_run`。
+- 更新 `README.md`、`TARKA_DESKTOP.PROJECT.md`、`USER.DESKTOP.md`、`contracts/TARKA_DESKTOP_CONTRACT.md` 和 `plans/TARKA_DESKTOP_PLAN.md`，统一当前插件、仿真交易、终态、合规异常和完成声明口径。
+- 本次未修改 VeroRun/workplace，未启动桌面/数据库/模型，未执行项目测试或安装包构建。
+
+## 2.1.0 — 2026-11-27
+
+- 新增**塔卡投研桌面版约规集**（finance-desktop）：
+  - `TARKA_DESKTOP.PROJECT.md` — 三端架构铁律（桌面零对外监听/服务器只做闸门/授权在本机）、证书与密钥纪律（2026-11-27 全仓审计结论：git 内容与历史零证书）、移动端边界（BFF 唯一入口/SW 缓存红线/配对闸）、FIN 系列执行口径、CMS 动态页纪律（含 upsert 整行覆盖陷阱）。
+  - `USER.DESKTOP.md` — `context: desktop` 授权（data_scope=own、can_trade=false 永久禁止、local_authority=true）。
+  - `contracts/TARKA_DESKTOP_CONTRACT.md` — 交付物验收门 + TP-2026-1127 连通契约（红线一票否决）+ 投研输出三要素 + 变更纪律。
+- 依据：TP-2026-1127 三方连通测试报告与修复实施（中继注册/BFF cherry-pick/SIGTERM 修复/UI 上传链打通）。
+- 更新 README 阅读顺序与目录。
+
 ## 2.0.5 — 2026-11-24
 
 - 明确编排关系：内容生成由 Athena 派发 Content；Builder 不自行转派、不直接调用 Content。

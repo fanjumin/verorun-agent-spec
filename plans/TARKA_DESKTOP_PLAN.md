@@ -1,6 +1,7 @@
 # 桌面端塔卡投研 · Agent 规划（finance-desktop）
 
-> 依据：`deploy/editions/finance-desktop.yaml`、`agent_matrix/editions/finance-desktop.AGENTS.md`、`agent_matrix/roles/finance-desktop/*.yaml`。  
+> 状态：阶段 0–2 的 Spec 文档已于 2026-11-28 补齐；UI、运行时评测与发布仍须单独验收。
+> 依据：`deploy/editions/finance-desktop.yaml`、`agent_matrix/editions/finance-desktop.AGENTS.md`、`agent_matrix/roles/finance-desktop/*.yaml`；静态复核见 `TARKA_DESKTOP_BASELINE.md`。
 > 本规划不预设未确认的产品细节；角色/工具/门禁以仓库为准。
 
 ## 1. 形态定位
@@ -9,14 +10,16 @@
 - context：`desktop`
 - 服务：`user_login=false`、`user_console=false`、`main_site=false`
 - 许可：`license_enforcement: true`（到期 fail-closed）
-- 用户：投研从业者/金融专业背景决策者；输出必须带口径、时点、置信度、来源
-- 不做：交易执行、账户/支付、对外发布、无许可数据出站
+- 用户：单用户本机实例；无需注册或登录 tarka.cn；本机认证不等于网站账号
+- 主 Agent：系统 slug 固定 `athena`，默认显示名/自称“金牛”；自定义称呼不改变系统身份
+- 首次启用：可跳过；先了解用户/助手称呼，明确同意后仅在本机保存偏好，见 `ONBOARDING.DESKTOP.md`
+- 不做：真实交易执行、账户/支付、对外发布、无许可数据出站
 
 ## 2. 真实角色集（8 个）
 
 | 角色 | slug | 职责 |
 | --- | --- | --- |
-| Athena | athena | 主控/拆解/汇总/升级 |
+| 金牛（系统角色 Athena） | athena | 主控/拆解/汇总/升级；显示名可定制，slug 不变 |
 | System Ops | ops | 备份/健康/告警/调度 |
 | Research Planner | rs_planner | 问题拆成可检验假设与数据清单 |
 | Fundamental Analyst | rs_fundamental | TTM 财务、估值区间、盈利质量 |
@@ -29,12 +32,15 @@
 
 ```
 用户问题
-  → Athena 拆解
-  → rs_planner：假设 + 数据清单
-  → 并行：rs_fundamental / rs_quant / rs_risk
-  → rs_pm：综合与仓位建议
-  → rs_compliance：合规闸门
+  → Athena 识别入口与深度
+  → 显式 DAG：rs_planner → collect → audit
+  → 并行：rs_fundamental / rs_quant / valuation（代码节点）
+  → rs_risk：反方与压力情景
+  → rs_pm：综合结论与 position_view（非订单）
+  → rs_compliance：末道合规闸门
   → Athena：证据链汇总 / 非投资建议声明
+
+独立路径：/api/discuss 为 Planner→Reviewer→Revise→Decider；/api/research/report 为独立深度报告。三者不得混写。
 ```
 
 强制：
@@ -57,11 +63,12 @@
 7. **审计/回放**：任务 ID、数据版本、提示词版本、模型、工具调用。
 8. **设置**：provider/model、数据源许可、区域、备份/恢复。
 
-不做：交易下单、持仓同步、支付/订阅页、对外发布。
+不做：真实交易下单、账户/支付、未经许可对外发布。后端已有 paper 仿真交易入口，但必须明确标识，且 Agent 默认不自动下单。
 
 ## 5. 数据与许可
 
 - `stock_analysis`、`multi_asset`、`bayes_engine`、`chaos_engine`、`butterfly_engine`、`project_workspace`、`content_factory`、`memory_engine`、`vault`、`net_proxy` 等按 `finance-desktop.yaml` include 为准。
+- 当前代码仍包含 `wechat_personal`；已决定目标移出白名单、尚未执行。实施后目标为 13 个业务插件，并同步清理 staging、安装包和 UI/API 死入口。
 - 数据源：tushare / akshare / akshare_special / 美股港股路由；每条带 `as_of`、`source`、`method`。
 - `ma_license.allow_llm` 未授权：fail-closed，不送模型；缓存也不豁免。
 - `APP_REGION` 决定境内/境外端点，不在代码/提示词硬编码。
@@ -91,12 +98,12 @@
 
 | 阶段 | 产出 | 门禁 |
 | --- | --- | --- |
-| 0. 基线 | 读 edition/L2/roles YAML；确认 provider/model/许可 | 与仓库一致 |
-| 1. 规格 | USER/SOUL/TONE、8 角色章程、研究合同 | 不越权、不编造 |
-| 2. 工作流 | Planner→并行分析→PM→Compliance | FIN-08/09 |
-| 3. UI | 8 个界面 + 空/错/过期态 | 四档宽度 |
-| 4. 评测 | golden + adversarial | P0/P1=0 |
-| 5. 发布 | 版本/回滚/许可 | 人工确认 |
+| 0. 基线 | 三仓库静态复核、真实角色/入口/插件与漂移清单 | 已完成文档；见 `TARKA_DESKTOP_BASELINE.md` |
+| 1. 规格 | USER/SOUL/TONE/TOOLS/MEMORY、8 角色章程、研究合同 | 已完成文档；不越权、不编造 |
+| 2. 工作流 | discuss/report/pipeline 分离；显式 DAG 合同 | 已完成 Spec；运行时待测 |
+| 3. UI | 8 个界面 + 空/错/过期态 | 待按实际前端逐项验收 |
+| 4. 评测 | `quality/DESKTOP_EVALS.md` golden + adversarial | 用例已设计，未执行；P0/P1=0 后才通过 |
+| 5. 发布 | 版本/回滚/许可/安装包 | 待人工确认与构建实测 |
 
 ## 8. 风险
 

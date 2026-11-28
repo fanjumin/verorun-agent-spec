@@ -1,70 +1,115 @@
-# VeroRun Agent 文档 · tarka.cn 网站项目
+# VeroRun / Tarka Agent Spec
 
-> 本目录是 **tarka.cn 网站项目的 Agent 文档**，不是 VeroRun 仓库根 `AGENTS.md`，也不是运行期 L1/L2 宪法。
-> 仓库真实分层：`agent_matrix/kernel.AGENTS.md`（L1）→ `agent_matrix/editions/<edition>.AGENTS.md`（L2）→ `agent_matrix/AGENTS.default.md`（用户覆盖层）→ 角色 YAML/Prompt。
+可执行 Agent Spec 仓库，当前包含两套明确隔离的项目约规：
 
-## 这套文档解决什么
+- **塔卡投研桌面版**：`finance-desktop + context: desktop`，VeroRun 后端 + Electron 本地核心。
+- **tarka.cn 网站**：`official + context: site`，公网站点建设与内容，不等同于桌面投研。
 
-- 网站形态只做公网站点：品牌、产品、方法论、安全、联系、建站与发布。
-- 不碰账户、交易、持仓、价格、订单、支付、客户 PII、投研建议。
-- 明确 Builder 的真实工具边界：只读 `sb_*` + 草稿写 `sb_*`；**publish 与版本恢复不向 Agent 开放**。
-- 明确“内容中心生产内容、site builder 只做页面/区块装配、区块只引用内容 ID”的仓库铁律；Builder 不生成文案。
+## 0. 文档类型与上位规则
 
-## 阅读顺序
+| 类型 | 作用 |
+| --- | --- |
+| 项目规则 | 使命、架构、边界、权限、完成定义 |
+| USER | Agent 服务对象与授权，不写系统提示词 |
+| SOUL / TONE | 人格价值与表达风格 |
+| TOOLS / MEMORY | 工具、副作用、数据许可与记忆边界 |
+| Registry + 角色章程 | 角色、职责、输入输出、交接、禁止事项 |
+| contracts / 研究流程 | 领域合同、状态机、证据与交付门 |
+| quality | 质量门禁和可执行评测设计 |
+| operations | 桌面启动、诊断、构建、事故与回滚 |
 
-1. `TARKA_WEBSITE.PROJECT.md` — 项目级补充规则（继承 L1，不替代 L1）
-2. `MULTI_FORM_MATRIX.md` — 多形态/发行版矩阵；只填 tarka.cn，其他待确认
-3. `AGENT_REGISTRY.md` — 按 `agent_matrix/roles/*.yaml` 校准的角色/工具/发行版
-4. `USER.md` — `context: site` 的 YAML 授权
-5. `SOUL.md` + `TONE.md` — 使命/价值排序 + 语气
-6. `contracts/SITE_BUILDER_CONTRACT.md` — 网站领域合同
-7. `contracts/TARKA_WEBSITE_BRIEF.md` — 线上已确认文案与待业务确认项
-8. `agents/AGENT_*.md` — 单角色项目级补充
-9. `workflows/WEBSITE_REBUILD.md`、`quality/`、`operations/` — 重构、验收、运维
+上位运行时规则仍以 VeroRun 的 `kernel.AGENTS.md`、`editions/*.AGENTS.md`、`AGENTS.default.md`、角色 YAML 与 prompts 为准。本仓库是项目层补充，不覆盖上位安全规则，也不代替后端技术强制。
 
-## 开发文档 vs 运行时文档（必须分清）
+开发文档与运行时文档必须分开：VeroRun 根 `AGENTS.md`、`agent_matrix/ARCHITECTURE.md` 等开发者资料不得直接注入运行时 Agent；项目约规如需接入，应通过真实加载链或项目层机制，不新造 edition。
 
-| 类型 | 文件 | 读者 | 是否注入运行期 Agent |
-| --- | --- | --- | --- |
-| **开发施工铁律** | 仓库根 `AGENTS.md` | 改代码的开发者/编码 Agent | **禁止** |
-| **开发架构设计** | `agent_matrix/ARCHITECTURE.md`、`agent_matrix/README.md` | 开发者/架构评审 | **禁止**（且可能滞后） |
-| **运行期内核宪法 L1** | `agent_matrix/kernel.AGENTS.md` | Athena、全部 sub 角色、orchestrator | 是 |
-| **发行版增量 L2** | `agent_matrix/editions/<edition>.AGENTS.md` | 对应 edition 的角色 | 是（按 VR_EDITION） |
-| **运行期用户覆盖层** | `agent_matrix/AGENTS.default.md`（部署为 `AGENTS.md`） | 运行期角色 | 是 |
-| **角色定义** | `agent_matrix/roles/*.yaml` | 运行期角色/调度 | 是（角色/工具/模块） |
-| **角色 Prompt** | `agent_matrix/prompts/*` | 对应角色 | 是（按 PromptResolver） |
-| **用户身份/授权** | `USER.md` | 运行期角色 | 是（`context/identity/grants`） |
-| **使命与价值排序** | `SOUL.md` | 运行期角色 | 是 |
-| **项目补充** | 本目录 `TARKA_WEBSITE.PROJECT.md` | 本项目运行时 | 作为项目级补充，不替代 L1 |
+---
 
-> 结论：根 `AGENTS.md` 和 `ARCHITECTURE.md` 是给开发者看的，不是给运行时 Agent 组看的。运行期以 L1 + L2 + `AGENTS.default.md` + `roles/*.yaml` + `prompts/*` + `USER.md` + `SOUL.md` 为准。
+# 一、塔卡投研桌面版（完整约规集）
 
-## 与仓库的关系
+## 1. 推荐阅读顺序
 
-- **不要**把本目录的 `TARKA_WEBSITE.PROJECT.md` 复制成仓库根 `AGENTS.md`；根 `AGENTS.md` 是开发者施工铁律。
-- 如果要将本项目规则纳入运行时，应作为项目级补充被 `AGENT_MATRIX` 加载，或按真实发行版写入 `agent_matrix/editions/<edition>.AGENTS.md`；不得新造 edition。
-- 角色、工具、发行版以 `agent_matrix/roles/*.yaml` 与 `deploy/editions/*.yaml` 为准；本文档只做 tarka.cn 项目的加严说明。
+1. `TARKA_DESKTOP_BASELINE.md` — 三仓库事实、真实职能、执行路径与文档漂移。
+2. `TARKA_DESKTOP.PROJECT.md` — 项目架构、三端边界、桌面发布和 FIN 规则。
+3. `USER.DESKTOP.md` — 本机授权、数据范围与交易边界。
+4. `SOUL.DESKTOP.md` + `TONE.DESKTOP.md` — 研究人格、价值排序与表达。
+5. `ONBOARDING.DESKTOP.md` — 金牛/Athena 身份分离、首次称呼设置与偏好记忆。
+6. `TOOLS.DESKTOP.md` + `MEMORY.DESKTOP.md` — 插件、API、审批、许可与记忆。
+7. `AGENT_REGISTRY.DESKTOP.md` + 8 个角色章程。
+8. `contracts/TARKA_DESKTOP_CONTRACT.md` + `contracts/TARKA_DESKTOP_RESEARCH_FLOW.md`。
+9. `quality/DESKTOP_QUALITY_GATES.md` + `quality/DESKTOP_EVALS.md`。
+10. `operations/DESKTOP_RUNBOOK.md`。
 
-## 目录
+## 2. 文档地图
 
-```
-verorun-agent/
-├─ README.md
-├─ TARKA_WEBSITE.PROJECT.md
-├─ MULTI_FORM_MATRIX.md
-├─ AGENT_REGISTRY.md
-├─ USER.md
-├─ SOUL.md
-├─ TONE.md
-├─ TOOLS.md
-├─ MEMORY.md
-├─ agents/*.md
-├─ contracts/*.md
-├─ workflows/WEBSITE_REBUILD.md
-├─ quality/QUALITY_GATES.md
-├─ quality/EVALS.md
-├─ operations/RUNBOOK.md
-├─ templates/            # Agent Spec Kit 可复制模板
-├─ plans/                # 形态规划（塔卡桌面投研）
-└─ CHANGELOG.md
-```
+| 文档 | 内容 |
+| --- | --- |
+| `TARKA_DESKTOP_BASELINE.md` | 静态审计与决策增量；真实架构、当前 14/目标 13 插件、文档漂移 |
+| `TARKA_DESKTOP.PROJECT.md` | 项目级最高补充规则、三端架构、发布与移动边界 |
+| `USER.DESKTOP.md` | 单用户本机授权；无需 tarka.cn 网站账号；不授予真实交易/用户管理 |
+| `SOUL.DESKTOP.md` | 合规与证据优先、反方、可证伪、失败诚实 |
+| `ONBOARDING.DESKTOP.md` | 默认金牛、内部 athena 不变；首次称呼设置、跳过与偏好记忆同意 |
+| `TONE.DESKTOP.md` | 专业克制的表达、数字与失败措辞 |
+| `TOOLS.DESKTOP.md` | 当前插件能力、关键后端入口、R0–R5 动作分级、出站许可 |
+| `MEMORY.DESKTOP.md` | 用户记忆/会话/证据/审计分层，隔离与禁止沉淀项 |
+| `AGENT_REGISTRY.DESKTOP.md` | 8 角色注册、研究入口映射、handoff 与终态 |
+| `agents/AGENT_DESKTOP_ATHENA.md` | 总控、路由、预算、汇总与升级 |
+| `agents/AGENT_DESKTOP_RS_PLANNER.md` | 假设与数据清单；collect 前不得伪造证据 |
+| `agents/AGENT_DESKTOP_RS_FUNDAMENTAL.md` | 基本面、PIT、修订阶段与财务证据 |
+| `agents/AGENT_DESKTOP_RS_QUANT.md` | 后端量价计算、样本、时态与偏差 |
+| `agents/AGENT_DESKTOP_RS_RISK.md` | 独立反方、压力情景与描述性风险工具 |
+| `agents/AGENT_DESKTOP_RS_PM.md` | 结论收敛、组合约束、可证伪输出 |
+| `agents/AGENT_DESKTOP_RS_COMPLIANCE.md` | reviewer 与确定性合规分离、末道门禁 |
+| `agents/AGENT_DESKTOP_OPS.md` | 本地核心、PG、插件、通道和完成证据 |
+| `contracts/TARKA_DESKTOP_CONTRACT.md` | 交付物、移动连通、证据与变更红线 |
+| `contracts/TARKA_DESKTOP_RESEARCH_FLOW.md` | discuss/report/pipeline 分离、9 节点 DAG、证据合同 |
+| `quality/DESKTOP_QUALITY_GATES.md` | G0–G10，基线、证据、权限、桌面构建与交付门 |
+| `quality/DESKTOP_EVALS.md` | 路由、角色、证据、合规、权限、桌面评测设计 |
+| `operations/DESKTOP_RUNBOOK.md` | 启停、PG、裁剪、健康检查、错误处置与事故报告 |
+
+## 3. 当前状态
+
+- 已完成：仓库静态分析、约规编写、桌面约规一致性与引用检查。
+- 未执行：桌面端启动、数据库/模型/数据源联调、项目测试、安装包构建和运行时评测。
+- `quality/DESKTOP_EVALS.md` 的状态是 `designed_not_run`，不得解读为“评测已通过”。
+- 发现的代码/文档漂移见基线审计，未借写 Spec 擅自修改 VeroRun 或 workplace。
+
+---
+
+# 二、tarka.cn 网站约规
+
+## 1. 阅读顺序
+
+1. `TARKA_WEBSITE.PROJECT.md`
+2. `USER.md`
+3. `SOUL.md` / `TONE.md`
+4. `TOOLS.md` / `MEMORY.md`
+5. `AGENT_REGISTRY.md` 与 `agents/AGENT_MASTER.md`、`AGENT_BUILDER.md`、`AGENT_CONTENT.md` 等
+6. `contracts/SITE_BUILDER_CONTRACT.md`
+7. `quality/QUALITY_GATES.md`、`quality/EVALS.md`
+8. `operations/RUNBOOK.md`
+
+## 2. 核心边界
+
+- 网站只做公网站点建设、内容与人工发布配合。
+- 不处理账户、交易、持仓、价格、订单、支付、客户 PII 或投研建议。
+- Content/内容中心生产内容；Builder 只做页面、区块、导航、布局、内容引用和发布检查。
+- Builder 不自行生成文案、不直接调用 Content；缺内容返回 `needs_content` 给 Athena，由 Athena 派发 Content 后回传 content_id。
+- publish/version_restore 不向 Agent 开放，由人工执行。
+
+## 3. 网站文档地图
+
+| 文档 | 作用 |
+| --- | --- |
+| `TARKA_WEBSITE.PROJECT.md` | 网站项目级规则 |
+| `USER.md` / `SOUL.md` / `TONE.md` | 网站授权、人格与语气 |
+| `AGENT_REGISTRY.md` | 网站角色注册与边界 |
+| `contracts/SITE_BUILDER_CONTRACT.md` | Site Builder 真实工具合同 |
+| `BOUNDARY_CORRECTION.md` | 内容/页面边界纠偏与历史测试归因 |
+| `quality/EVALS.md` | 网站 A–D 组评测 |
+| `plans/MARKDOWN_DROP_PUBLISH.md` | 网站 Markdown 投递与发布规划 |
+| `templates/` | 新实例 Spec 模板 |
+| `CHANGELOG.md` | 两项目的文档变更记录 |
+
+## 4. 模板使用
+
+复制 `templates/` 创建新实例时，先读真实 VeroRun 仓库的 L1/L2、角色 YAML、发行 YAML 与插件手册，再填写角色和工具；不得从其他项目猜权限、接口或发行版。
